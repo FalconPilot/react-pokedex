@@ -1,0 +1,4 @@
+#Tue May 02 19:50:00 CEST 2017
+base.0=/Users/falconpilot/codage/react_projects/react-pokedex/android/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main
+renamed.0=classes.dex
+file.0=/Users/falconpilot/codage/react_projects/react-pokedex/android/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main/classes.dex
