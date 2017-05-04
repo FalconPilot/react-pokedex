@@ -21,4 +21,8 @@ export default class ReactPokedex extends Component {
   }
 }
 
+const styles = StyleSheet.create({
+
+});
+
 AppRegistry.registerComponent('ReactPokedex', () => ReactPokedex);
