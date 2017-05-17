@@ -14,7 +14,9 @@ export default class App extends Component {
     super(props);
     global.baseURL = "http://pokeapi.co/api/v2";
     this.state = {
-      pokemons: []
+      pokemons: [],
+      previous: null,
+      next: null
     };
   }
 
@@ -24,7 +26,7 @@ export default class App extends Component {
       <View style={styles.container}>
         <Text style={styles.header}>Pokédex</Text>
         <View style={styles.mainContent}>
-          <Pokelist pokemons={this.state.pokemons} lookup={require('./images.js')}/>
+          <Pokelist pokemons={this.state.pokemons} next={this.state.next} lookup={require('./images.js')}/>
           <Pokecontent/>
         </View>
       </View>
@@ -37,11 +39,15 @@ export default class App extends Component {
     fetch(url)
       .then(response => response.json())
       .then(data => {
-        this.setState({pokemons: data.results});
+        this.setState({
+          pokemons: data.results,
+          previous: data.previous,
+          next: data.next
+        });
       })
       .catch(error => {
         console.error(error);
-      })
+      });
   }
 
 }
@@ -53,7 +59,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: bgColor,
+    backgroundColor: bgColor
   },
   mainContent: {
     flex: 1,

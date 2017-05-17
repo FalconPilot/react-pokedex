@@ -14,16 +14,34 @@ class Pokelist extends Component {
     super(props);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
-      dataSource: ds.cloneWithRows(this.props.pokemons)
+      dataSource: ds,
+      next: null
     };
+  }
+
+  getPokemons(next) {
+    if (next !== null) {
+      fetch(next)
+        .then(response => response.json())
+        .then(data => {
+          this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(this.state.dataSource._dataBlob.s1.concat(data.results))
+          });
+          this.getPokemons(data.next);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
   }
 
   /* Receive props */
   componentWillReceiveProps(nextProps) {
     let newDS = this.state.dataSource.cloneWithRows(nextProps.pokemons);
     this.setState({
-      dataSource : newDS
+      dataSource: newDS
     });
+    this.getPokemons(nextProps.next);
   }
 
   /* Render */
@@ -33,8 +51,7 @@ class Pokelist extends Component {
         enableEmptySections={true}
         style={styles.container}
         dataSource={this.state.dataSource}
-        scrollRenderAheadDistance={40}
-        renderRow={(rowData) =>
+        renderRow={rowData =>
           /* Pokemon component */
           <Pokemon
             name={rowData.name}
@@ -61,6 +78,7 @@ Pokelist.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 0,
     paddingHorizontal: 5
   },
   separator: {

@@ -47,7 +47,7 @@ class Pokemon extends Component {
       <View>
         <TouchableHighlight onPress={this._onPressButton}>
           <View style={styles.pokeContainer}>
-            <Text>#{this.state.id}</Text>
+            <Text style={styles.pokeId}>#{this.state.id}</Text>
             <Image
               style={styles.pokeImage}
               source={src}
@@ -85,6 +85,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     height: pokeHeight,
     width: pokeHeight
+  },
+  pokeId: {
+    minWidth: 30
   }
 });
 
