@@ -22,8 +22,11 @@ export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Pokelist pokemons={this.state.pokemons}/>
-        <Pokecontent/>
+        <Text style={styles.header}>Pokédex</Text>
+        <View style={styles.mainContent}>
+          <Pokelist pokemons={this.state.pokemons} lookup={require('./images.js')}/>
+          <Pokecontent/>
+        </View>
       </View>
     );
   }
@@ -43,12 +46,27 @@ export default class App extends Component {
 
 }
 
+const pokedexColor = '#db5353';
+const bgColor = '#F5FCFF';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F5FCFF'
+    justifyContent: 'flex-start',
+    backgroundColor: bgColor,
+  },
+  mainContent: {
+    flex: 1,
+    flexDirection: 'row',
+    borderColor: pokedexColor,
+    borderWidth: 2
+  },
+  header: {
+    padding: 5,
+    alignSelf: "stretch",
+    backgroundColor: pokedexColor,
+    color: bgColor,
+    textAlign: 'center',
+    fontSize: 20
   }
 });

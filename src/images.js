@@ -901,5 +901,5 @@ export default {
   "img_99": require("../assets/pokeapi/sprites/pokemon/99.png"),
   "img_egg-manaphy": require("../assets/pokeapi/sprites/pokemon/egg-manaphy.png"),
   "img_egg": require("../assets/pokeapi/sprites/pokemon/egg.png"),
-  "img_substitute": require("../assets/pokeapi/sprites/pokemon/substitute.png")
+  "img_substitute": require("../assets/pokeapi/sprites/pokemon/substitute.png"),
 };

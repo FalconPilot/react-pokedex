@@ -42,13 +42,15 @@ class Pokemon extends Component {
 
   /* Render */
   render() {
+    let src = this.props.lookup['default'][`img_${this.state.id}`];
     return (
       <View>
         <TouchableHighlight onPress={this._onPressButton}>
           <View style={styles.pokeContainer}>
+            <Text>#{this.state.id}</Text>
             <Image
               style={styles.pokeImage}
-              source={require('../images.js')["img_" + this.state.id]}
+              source={src}
             />
             <Text>{this.state.name}</Text>
           </View>
@@ -69,19 +71,20 @@ Pokemon.propsType = {
   src: React.PropTypes.string.isRequired
 }
 
-const pokeHeight = "2em";
+const pokeHeight = 40;
 const styles = StyleSheet.create({
   line: {
-    height: 20
+    height: pokeHeight
   },
   pokeContainer: {
     flexDirection: 'row',
-    marginVertical: 5
+    alignItems: 'center',
+    paddingVertical: 5
   },
   pokeImage: {
-    marginHorizontal: 5,
-    height: 20,
-    width: 20
+    paddingHorizontal: 5,
+    height: pokeHeight,
+    width: pokeHeight
   }
 });
 

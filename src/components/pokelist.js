@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
+  ListView,
   Text,
-  ListView
+  View
 } from 'react-native';
 import Pokemon from './pokemon.js';
 
@@ -29,10 +30,20 @@ class Pokelist extends Component {
   render() {
     return (
       <ListView
+        enableEmptySections={true}
         style={styles.container}
         dataSource={this.state.dataSource}
+        scrollRenderAheadDistance={40}
         renderRow={(rowData) =>
-          <Pokemon name={rowData.name} src={rowData.url}/>
+          /* Pokemon component */
+          <Pokemon
+            name={rowData.name}
+            src={rowData.url}
+            lookup={this.props.lookup}
+          />
+        }
+        renderSeparator={(sectionId, rowId) =>
+          <View key={rowId} style={styles.separator}/>
         }
       />
     );
@@ -50,7 +61,12 @@ Pokelist.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 5
+    paddingHorizontal: 5
+  },
+  separator: {
+    flex: 1,
+    height: 2,
+    backgroundColor: '#E8E8E8'
   }
 });
 
