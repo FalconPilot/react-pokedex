@@ -36,13 +36,12 @@ class Pokemon extends Component {
   }
 
   /* On press button */
-  _onPressButton() {
-    console.log("Bip !");
+  _onPressButton = () => {
+    this.props.onChange(this.props.src);
   }
 
   /* Render */
   render() {
-    let src = this.props.lookup['default'][`img_${this.state.id}`];
     return (
       <View>
         <TouchableHighlight onPress={this._onPressButton}>
@@ -50,7 +49,7 @@ class Pokemon extends Component {
             <Text style={styles.pokeId}>#{this.state.id}</Text>
             <Image
               style={styles.pokeImage}
-              source={src}
+              source={this.props.lookup['default'][`img_${this.state.id}`]}
             />
             <Text>{this.state.name}</Text>
           </View>

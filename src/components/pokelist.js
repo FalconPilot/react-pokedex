@@ -20,7 +20,7 @@ class Pokelist extends Component {
   }
 
   getPokemons(next) {
-    if (next !== null) {
+    if (next !== null && next !== undefined) {
       fetch(next)
         .then(response => response.json())
         .then(data => {
@@ -30,7 +30,7 @@ class Pokelist extends Component {
           this.getPokemons(data.next);
         })
         .catch(error => {
-          console.error(error);
+          console.error("Impossible de communiquer avec l'API");
         });
     }
   }
@@ -57,6 +57,7 @@ class Pokelist extends Component {
             name={rowData.name}
             src={rowData.url}
             lookup={this.props.lookup}
+            onChange={this.props.onChange}
           />
         }
         renderSeparator={(sectionId, rowId) =>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  ActivityIndicator,
   StyleSheet,
   Text,
   View
@@ -16,7 +17,8 @@ export default class App extends Component {
     this.state = {
       pokemons: [],
       previous: null,
-      next: null
+      next: null,
+      displayed: null
     };
   }
 
@@ -26,8 +28,13 @@ export default class App extends Component {
       <View style={styles.container}>
         <Text style={styles.header}>Pokédex</Text>
         <View style={styles.mainContent}>
-          <Pokelist pokemons={this.state.pokemons} next={this.state.next} lookup={require('./images.js')}/>
-          <Pokecontent/>
+          <Pokelist
+            pokemons={this.state.pokemons}
+            next={this.state.next}
+            lookup={require('./images.js')}
+            onChange={this.onChange}
+          />
+          <Pokecontent pokemon={this.state.displayed}/>
         </View>
       </View>
     );
@@ -48,6 +55,16 @@ export default class App extends Component {
       .catch(error => {
         console.error(error);
       });
+  }
+
+  /* Onchange */
+  onChange = (data) => {
+    this.setState({
+      pokemons: this.state.pokemons,
+      previous: this.state.previous,
+      next: this.state.next,
+      displayed: data
+    });
   }
 
 }
