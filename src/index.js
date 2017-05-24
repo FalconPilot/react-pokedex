@@ -1,3 +1,4 @@
+/* React imports */
 import React, { Component } from 'react';
 import {
   ActivityIndicator,
@@ -6,63 +7,110 @@ import {
   View
 } from 'react-native';
 
+/* Components imports */
 import Pokelist from './components/pokelist.js';
 import Pokecontent from './components/pokecontent.js';
+
+/* Helper imports */
+import {
+  GetId
+} from './helpers.js';
 
 export default class App extends Component {
   /* Constructor */
   constructor(props) {
     super(props);
-    global.baseURL = "http://pokeapi.co/api/v2";
     this.state = {
       pokemons: [],
-      previous: null,
       next: null,
-      displayed: null
+      displayed: null,
+      loading: false
     };
+    /* Globals setting */
+    global.baseURL = "http://pokeapi.co/api/v2";
+    global.pokeCacheLength = 3;
   }
 
   /* Render */
   render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.header}>Pokédex</Text>
-        <View style={styles.mainContent}>
-          <Pokelist
-            pokemons={this.state.pokemons}
-            next={this.state.next}
-            lookup={require('./images.js')}
-            onChange={this.onChange}
-          />
-          <Pokecontent pokemon={this.state.displayed}/>
+      const lookup = require('./images.js');
+
+      /* Loading activity indicator */
+      let indicator = this.state.loading === true
+        ? <View style={styles.centeredView}>
+            <ActivityIndicator/>
+          </View>
+        : null;
+
+      /* Error display */
+      let error = this.state.error !== undefined
+        ? <View style={styles.centeredView}>
+            <Text>{this.state.error}</Text>
+          </View>
+        : null
+
+      /* Middle styles */
+      let middleStyle = this.state.error !== undefined || this.state.loading === true
+        ? styles.hidden
+        : styles.middle
+
+      /* Rendering */
+      return (
+        <View style={styles.container}>
+          <Text style={styles.header}>Pokédex</Text>
+          <View style={styles.mainContent}>
+            {indicator}
+            {error}
+            <View style={middleStyle}>
+              <Pokelist
+                lookup={lookup}
+                next={this.state.next}
+                onChange={this.onChange}
+                pokemons={this.state.pokemons}
+                style={styles.pokelist}
+                storedState={this.state.storedState}
+              />
+              <Pokecontent
+                id={GetId(this.state.displayed)}
+                lookup={lookup}
+                pokemon={this.state.displayed}
+              />
+            </View>
+          </View>
         </View>
-      </View>
-    );
+      );
   }
 
   /* Will mount ? */
   componentWillMount() {
+    this.setState({
+      loading: true
+    });
     let url = `${global.baseURL}/pokemon`;
     fetch(url)
       .then(response => response.json())
       .then(data => {
-        this.setState({
-          pokemons: data.results,
-          previous: data.previous,
-          next: data.next
-        });
+        if (data.detail !== undefined && data.detail !== null) {
+          this.setState({
+            loading: false,
+            error: "API indisponible !"
+          });
+        } else {
+          this.setState({
+            pokemons: data.results,
+            next: data.next,
+            loading: false
+          });
+        }
       })
       .catch(error => {
-        console.error(error);
+        console.warn(error);
       });
   }
 
   /* Onchange */
   onChange = (data) => {
     this.setState({
-      pokemons: this.state.pokemons,
-      previous: this.state.previous,
-      next: this.state.next,
       displayed: data
     });
   }
@@ -74,22 +122,32 @@ const bgColor = '#F5FCFF';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'stretch',
     justifyContent: 'flex-start',
     backgroundColor: bgColor
   },
   mainContent: {
     flex: 1,
-    flexDirection: 'row',
     borderColor: pokedexColor,
     borderWidth: 2
   },
   header: {
     padding: 5,
-    alignSelf: "stretch",
     backgroundColor: pokedexColor,
     color: bgColor,
     textAlign: 'center',
     fontSize: 20
+  },
+  middle: {
+    flex: 1,
+    flexDirection: 'row'
+  },
+  hidden: {
+    flex: 0
+  },
+  centeredView: {
+    flex: 1,
+    alignSelf: 'center',
+    justifyContent: 'center'
   }
 });

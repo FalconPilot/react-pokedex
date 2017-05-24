@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
+  AsyncStorage,
   ListView,
+  StyleSheet,
   Text,
   View
 } from 'react-native';
@@ -20,6 +21,7 @@ class Pokelist extends Component {
   }
 
   getPokemons(next) {
+    console.log(next);
     if (next !== null && next !== undefined) {
       fetch(next)
         .then(response => response.json())
@@ -27,16 +29,18 @@ class Pokelist extends Component {
           this.setState({
             dataSource: this.state.dataSource.cloneWithRows(this.state.dataSource._dataBlob.s1.concat(data.results))
           });
+          // AsyncStorage.setItem('pokelist', JSON.stringify(this.state));
           this.getPokemons(data.next);
         })
         .catch(error => {
-          console.error("Impossible de communiquer avec l'API");
+          console.warn(error);
         });
     }
   }
 
   /* Receive props */
   componentWillReceiveProps(nextProps) {
+    console.log(Object.keys(nextProps));
     let newDS = this.state.dataSource.cloneWithRows(nextProps.pokemons);
     this.setState({
       dataSource: newDS
@@ -79,7 +83,7 @@ Pokelist.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0,
+    flex: 1,
     paddingHorizontal: 5
   },
   separator: {

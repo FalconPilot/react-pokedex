@@ -1,3 +1,4 @@
+/* React imports */
 import React, { Component } from 'react';
 import {
   Image,
@@ -7,32 +8,21 @@ import {
   View
 } from 'react-native';
 
+/* Helper imports */
+import {
+  FormatName,
+  GetId
+} from '../helpers.js';
+
 class Pokemon extends Component {
 
   /* Constructor */
   constructor(props) {
     super(props);
     this.state = {
-      id: this.getId(this.props.src),
-      name: this.formatName(this.props.name)
+      id: GetId(this.props.src),
+      name: FormatName(this.props.name)
     };
-  }
-
-  /* Format name */
-  formatName(rawName) {
-    return (
-      rawName.toLowerCase()
-        .replace(/\b[a-z]/g, function(letter) {
-          return letter.toUpperCase();
-        })
-    )
-  }
-
-  /* Get ID from SRC */
-  getId(url) {
-    return (
-      url.split("/").slice(-2)[0]
-    );
   }
 
   /* On press button */
