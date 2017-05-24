@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import {
   ActivityIndicator,
+  AsyncStorage,
   StyleSheet,
   Text,
   View
@@ -24,11 +25,12 @@ export default class App extends Component {
       pokemons: [],
       next: null,
       displayed: null,
-      loading: false
+      loading: false,
+      loadedState: null
     };
     /* Globals setting */
     global.baseURL = "http://pokeapi.co/api/v2";
-    global.pokeCacheLength = 3;
+    global.pokeCacheLength = 10;
   }
 
   /* Render */
@@ -68,7 +70,7 @@ export default class App extends Component {
                 onChange={this.onChange}
                 pokemons={this.state.pokemons}
                 style={styles.pokelist}
-                storedState={this.state.storedState}
+                loadedState={this.state.loadedState}
               />
               <Pokecontent
                 id={GetId(this.state.displayed)}
@@ -86,26 +88,36 @@ export default class App extends Component {
     this.setState({
       loading: true
     });
-    let url = `${global.baseURL}/pokemon`;
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        if (data.detail !== undefined && data.detail !== null) {
-          this.setState({
-            loading: false,
-            error: "API indisponible !"
+    AsyncStorage.setItem('pokelist', null);
+    AsyncStorage.getItem('pokelist', (err, result) => {
+      if (result !== null && result !== undefined) {
+        this.setState({
+          loadedState: JSON.parse(result),
+          loading: false
+        });
+      } else {
+        let url = `${global.baseURL}/pokemon`;
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            if (data.detail !== undefined && data.detail !== null) {
+              this.setState({
+                loading: false,
+                error: "API indisponible !"
+              });
+            } else {
+              this.setState({
+                pokemons: data.results,
+                next: data.next,
+                loading: false
+              });
+            }
+          })
+          .catch(error => {
+            console.warn(error);
           });
-        } else {
-          this.setState({
-            pokemons: data.results,
-            next: data.next,
-            loading: false
-          });
-        }
-      })
-      .catch(error => {
-        console.warn(error);
-      });
+      }
+    });
   }
 
   /* Onchange */

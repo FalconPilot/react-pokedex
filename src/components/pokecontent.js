@@ -28,16 +28,30 @@ class Pokecontent extends Component {
     if (this.state.pokemon !== null && this.state.pokemon !== undefined) {
       return (
         <View style={styles.container}>
+          <Image
+            style={styles.pokeImage}
+            source={this.props.lookup['default'][`img_${this.props.id}`]}
+          />
+          <Text style={styles.pokeName}>{FormatName(this.state.pokemon.name)}</Text>
           <View style={styles.block}>
-            <Image source={this.props.lookup['default'][`img_${this.props.id}`]}/>
-            <Text style={styles.pokeName}>{FormatName(this.state.pokemon.name)}</Text>
+            {this.state.pokemon.stats.map((item, index) => {
+              console.log(item.base_value);
+              return (
+                <View key={index} style={styles.statBlock}>
+                  <Text style={styles.pokeStat}>{FormatName(item.stat.name)}</Text>
+                  <Text style={styles.pokeStat}>{item.base_stat}</Text>
+                </View>
+              );
+            })}
           </View>
         </View>
       );
     } else if (this.state.loading === true) {
       return (
         <View style={styles.container}>
-          <ActivityIndicator/>
+          <View style={{flex: 1, justifyContent: 'center'}}>
+            <ActivityIndicator/>
+          </View>
         </View>
       );
     } else {
@@ -66,22 +80,45 @@ class Pokecontent extends Component {
   }
 }
 
+const bgColor = "#333";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
-    backgroundColor: "#333",
-    justifyContent: 'center',
-    alignItems: 'stretch'
+    padding: 5,
+    backgroundColor: bgColor,
+    justifyContent: 'flex-start',
+    alignItems: 'center'
   },
   block: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'stretch',
+    flexWrap: 'wrap'
   },
   blankContainer: {
     flex: 0
   },
+  pokeImage: {
+    padding: 2,
+    backgroundColor: '#555',
+    borderWidth: 2,
+    borderColor: '#FFF',
+    borderRadius: 5
+  },
   pokeName: {
+    color: '#FFF',
+    textAlign: 'center'
+  },
+  statBlock: {
+    flexGrow: 1,
+    margin: 5,
+    padding: 5,
+    borderWidth: 1,
+    borderColor: '#FFF',
+    borderRadius: 5
+  },
+  pokeStat: {
     color: '#FFF',
     textAlign: 'center'
   }
