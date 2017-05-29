@@ -21,7 +21,7 @@ That made a Pokedex the most interesting choice to get a shot at ReactNative. Pl
 
 # How does it operate ?
 
-Pretty simply, actually. It just fetches the pokemon list from the PokeAPI, and stocks the data in the built-in AsyncStorage provided by ReactNative (this is done to prevent having to send tons of new requests each time you open the app. You only load the pokemon from the API once !). Pokemons are only loaded as you touch them, sending a request to load its data. Finally, it renders it once the data has been fetched. Really, it's as simple as it gets, but that's what made it an interesting project to learn the language in the first place.
+Pretty simply, actually. It just fetches the pokemon list from the PokeAPI, and stocks the data in the built-in AsyncStorage provided by ReactNative (this is done to prevent having to send tons of new requests each time you open the app. You only load the pokemon list from the API once !). Pokemons are only loaded as you touch them, sending a request to load its data. Finally, it renders it once the data has been fetched. Really, it's as simple as it gets, but that's what made it an interesting project to learn the language in the first place.
 
 # But there are already mobile Pokedex out there !
 
