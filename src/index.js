@@ -88,14 +88,17 @@ export default class App extends Component {
     this.setState({
       loading: true
     });
-    AsyncStorage.setItem('pokelist', null);
     AsyncStorage.getItem('pokelist', (err, result) => {
       if (result !== null && result !== undefined) {
+        /* Data saved, save in state */
+        const loaded = JSON.parse(result);
         this.setState({
-          loadedState: JSON.parse(result),
+          loadedState: loaded.data,
+          next: loaded.next,
           loading: false
         });
       } else {
+        /* No data saved, fetch pokemon list */
         let url = `${global.baseURL}/pokemon`;
         fetch(url)
           .then(response => response.json())
@@ -129,8 +132,11 @@ export default class App extends Component {
 
 }
 
+/* Stylesheet variables */
 const pokedexColor = '#db5353';
 const bgColor = '#F5FCFF';
+
+/* Component stylesheet */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
