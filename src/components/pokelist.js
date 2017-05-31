@@ -40,7 +40,6 @@ class Pokelist extends Component {
       AsyncStorage
         .getItem('pokelist', (err, result) => {
           if (result !== null && result !== undefined) {
-            const data = JSON.parse(result);
             const ds = this.state.dataSource._dataBlob.s1;
             if (data.dataSource._dataBlob.s1.length < ds.length) {
               AsyncStorage.setItem('pokelist', JSON.stringify(ds));
