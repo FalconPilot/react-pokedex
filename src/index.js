@@ -91,10 +91,8 @@ export default class App extends Component {
     AsyncStorage.getItem('pokelist', (err, result) => {
       if (result !== null && result !== undefined) {
         /* Data saved, save in state */
-        const loaded = JSON.parse(result);
         this.setState({
-          loadedState: loaded.data,
-          next: loaded.next,
+          loadedList: JSON.parse(result),
           loading: false
         });
       } else {
