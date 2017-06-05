@@ -35,7 +35,6 @@ class Pokecontent extends Component {
           <Text style={styles.pokeName}>{FormatName(this.state.pokemon.name)}</Text>
           <View style={styles.block}>
             {this.state.pokemon.stats.map((item, index) => {
-              console.log(item.base_value);
               return (
                 <View key={index} style={styles.statBlock}>
                   <Text style={styles.pokeStat}>{FormatName(item.stat.name)}</Text>

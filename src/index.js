@@ -22,11 +22,9 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pokemons: [],
-      next: null,
       displayed: null,
-      loading: false,
-      loadedState: null
+      loading: true,
+      error: undefined
     };
     /* Globals setting */
     global.baseURL = "http://pokeapi.co/api/v2";
@@ -66,11 +64,10 @@ export default class App extends Component {
             <View style={middleStyle}>
               <Pokelist
                 lookup={lookup}
-                next={this.state.next}
                 onChange={this.onChange}
-                pokemons={this.state.pokemons}
+                addError={this.addError}
+                toggleLoading={this.toggleLoading}
                 style={styles.pokelist}
-                loadedState={this.state.loadedState}
               />
               <Pokecontent
                 id={GetId(this.state.displayed)}
@@ -83,48 +80,25 @@ export default class App extends Component {
       );
   }
 
-  /* Will mount ? */
-  componentWillMount() {
-    this.setState({
-      loading: true
-    });
-    AsyncStorage.getItem('pokelist', (err, result) => {
-      if (result !== null && result !== undefined) {
-        /* Data saved, save in state */
-        this.setState({
-          loadedList: JSON.parse(result),
-          loading: false
-        });
-      } else {
-        /* No data saved, fetch pokemon list */
-        let url = `${global.baseURL}/pokemon`;
-        fetch(url)
-          .then(response => response.json())
-          .then(data => {
-            if (data.detail !== undefined && data.detail !== null) {
-              this.setState({
-                loading: false,
-                error: "API indisponible !"
-              });
-            } else {
-              this.setState({
-                pokemons: data.results,
-                next: data.next,
-                loading: false
-              });
-            }
-          })
-          .catch(error => {
-            console.warn(error);
-          });
-      }
-    });
-  }
-
-  /* Onchange */
+  /* Changing displayed pokemon */
   onChange = (data) => {
     this.setState({
       displayed: data
+    });
+  }
+
+  /* Add Error */
+  addError = (error) => {
+    this.setState({
+      error: error,
+      loading: false
+    });
+  }
+
+  /* Toggle Loading */
+  toggleLoading = () => {
+    this.setState({
+      loading: !this.state.loading
     });
   }
 

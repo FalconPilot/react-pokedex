@@ -15,8 +15,8 @@ class Pokelist extends Component {
     super(props);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
-      dataSource: ds,
-      next: null
+      dataSource: ds.cloneWithRows([]),
+      loading: true
     };
   }
 
@@ -27,50 +27,55 @@ class Pokelist extends Component {
       fetch(next)
         .then(response => response.json())
         .then(data => {
+          /* Toggle main app loading */
+          if (this.state.loading === true) {
+            this.props.toggleLoading();
+          }
+
+          /* Update state */
           this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(this.state.dataSource._dataBlob.s1.concat(data.results))
+            dataSource: this.state.dataSource.cloneWithRows(this.state.dataSource._dataBlob.s1.concat(data.results)),
+            loading: false
           });
+
+          /* Update AsyncStorage */
+          AsyncStorage.multiSet([
+            ['next', data.next],
+            ['pokelist', JSON.stringify(this.state.dataSource._dataBlob.s1)]
+          ]);
           this.getPokemons(data.next);
         })
         .catch(error => {
+          this.props.addError("Impossible de se connecter à l'API !");
           console.warn(error);
         });
-    /* AsyncStorage caching */
+    /* Remove next if null */
     } else {
-      AsyncStorage
-        .getItem('pokelist', (err, result) => {
-          if (result !== null && result !== undefined) {
-            const data = JSON.parse(result);
-            const ds = this.state.dataSource._dataBlob.s1;
-            if (data.dataSource._dataBlob.s1.length < ds.length) {
-              AsyncStorage.setItem('pokelist', JSON.stringify(ds));
-            }
-          } else {
-            AsyncStorage.setItem('pokelist', JSON.stringify(ds));
-          }
-        })
-        .catch(error => {
-          console.warn(error);
-        });
+      AsyncStorage.removeItem('next');
     }
   }
 
-  /* Receive props */
-  componentWillReceiveProps(nextProps) {
-    /* If dataSource was loaded */
-    if (nextProps.loadedState !== null && nextProps.loadedState !== undefined) {
-      this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(nextProps.loadedState.dataSource._dataBlob.s1)
-      });
-      this.getPokemons(this.state.next);
-    /* If dataSource is not loaded */
-    } else {
-      let newDS = this.state.dataSource.cloneWithRows(nextProps.pokemons);
-      this.setState({
-        dataSource: newDS
-      });
-      this.getPokemons(nextProps.next);
-    }
+  /* Initialize pokemon list */
+  componentWillMount() {
+    AsyncStorage.multiGet(['pokelist', 'next'], (err, stores) => {
+      const pokelist = stores['0']['1'];
+      const next = stores['1']['1'];
+      if (pokelist !== null && pokelist !== undefined) {
+        /* Update state */
+        this.setState({
+          dataSource: this.state.dataSource.cloneWithRows(JSON.parse(pokelist)),
+          loading: false
+        });
+
+        /* Toggle loading */
+        this.props.toggleLoading();
+
+        /* Get next pokemons */
+        this.getPokemons(next);
+      } else {
+        this.getPokemons(`${global.baseURL}/pokemon`);
+      }
+    });
   }
 
   /* Render */
